@@ -1,0 +1,297 @@
+﻿@page
+@model ServerlessApp.Pages.MoviesModel
+@{
+    ViewData["Title"] = "Movies";
+    Layout = null;// "~/Pages/_Layout.cshtml";
+}
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"
+        integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E="
+        crossorigin="anonymous"></script>
+<link href="~/css/jquery-ui.css" rel="stylesheet" />
+<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js "></script>
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>-->
+<link rel="stylesheet" href="~/css/site.css" />
+<link rel="stylesheet" href="~/css/bootstrap.min.css" />
+<script src="~/js/bootstrap.js"></script>
+
+<script type="text/javascript">
+    var userData = null;
+    var data = {
+        Email: 'Test',
+        Password: 'Test',
+        RememberMe: true
+    };
+    $(document).ready(function myfunction() {
+
+        $.ajax({
+            url: "http://localhost:53768/api/Movies",
+
+            dataType: "json",
+            crossdomain: true,
+            contentType: "application/json",
+            type: "GET",
+            //define a contentType of your request
+            secure: true,
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "*"
+            },
+            success: function (data) {
+                tblData = data
+                $.each(data, function (i, data) {
+                    var actorsData = data.Table[i].Actors;
+                    var actorsNames = actorNames(actorsData);
+                    window.sessionStorage.setItem('data', data.Table[i]);
+                    userData = data;
+                    var Update = "<a name=LoginButton data-toggle= modal  data-target= #exampleModal onclick=myfunction('" + this.ItemArray[1] + "')  value=Update href=# id=btnUpdate>Update</a>";
+                    var Delete = "<a name=LoginBut onclick=DeleteRecord('" + this.ItemArray[1] + "') href=# id=" + data.Table[i].MovieName + ">Delete</a>";
+                    var body = "<tr>";//  data-toggle=modal data-id= " + i + " data-target=#exampleModal
+                    body += "<td id=" + data.Table[i].MovieName + ">" + data.Table[i].MovieName + "</td > ";
+                    body += "<td>" + data.Table[i].DateOfRelease + "</td>";
+                    body += "<td>" + data.Table[i].Producer + "</td>";
+                    body += "<td>" + actorsNames.replace(/,\s*$/, "") + "</td>";
+                    body += "<td>" + Update + "  ||  " + Delete + "</td>";
+                    body += "</tr>";
+                    $(body).appendTo($(".tblData"));
+                });
+                $('#tblMovies').DataTable();
+            },
+            error: function (xhr, errorType, exception) {
+                var errorMessage = exception || xhr.statusText;
+                console.log(exception);
+                console.log(xhr);
+                alert(errorType + ";  " + errorMessage + " " + exception + "  Status:: " + xhr.statusText);
+            }
+        });
+
+
+    });
+
+    function actorNames(data) {
+        var names = "";
+        for (var i = 0; i < data.length; i++) {
+            names = names + data[i].ActorName + ",";
+        }
+        return names;
+    }
+
+    $('#dvPopup').on('load', function () {
+        //var $el = $("#modal_contact");
+        //var $username = $el.data('userName');
+        console.log("Success");
+    });
+
+    function myfunction(movieName) {
+        console.log(movieName);
+
+
+        $.ajax({
+            url: "http://localhost:53768/api/Movies/" + movieName + "",
+
+            dataType: "json",
+            crossdomain: true,
+            contentType: "application/json",
+            type: "GET",
+            //define a contentType of your request
+            secure: true,
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "*"
+            },
+            success: function (data) {
+                tblData = data
+                $.each(data, function (i, data) {
+                    var actorsData = data.Table[i].Actors;
+                    window.sessionStorage.setItem('data', data.Table[i]);
+                    userData = data;
+                    $('#txtMovieName').val(movieName);
+                    $('#txtProducer').val(data.Table[i].Producer);
+                    $("#txtReleaseDate").val(data.Table[i].DateOfRelease);
+                    var body = "";
+                    for (var i = 0; i <= actorsData.length - 1; i++) {
+                        body += "<option id=" + i + ">" + actorsData[i].ActorName + "</option > ";
+                        $(body).appendTo($("#slctActors"));
+                    }
+
+                });
+            },
+            error: function (xhr, errorType, exception) {
+                var errorMessage = exception || xhr.statusText;
+                console.log(exception);
+                console.log(xhr);
+                alert(errorType + ";  " + errorMessage + " " + exception + "  Status:: " + xhr.statusText);
+            }
+        });
+
+        $("#txtReleaseDate").datepicker({
+            inline: true
+        });
+        $("#exampleModal").modal();
+    }
+
+
+    function getData(movie) {
+
+    }
+
+    function DeleteRecord(movieName) {
+        console.log(document.getElementsByName("LoginBut"));
+        // var $row = $(this).closest("tr");    // Find the row
+        //var $text = $row.find("#tmp").text(); // Find the text
+        $.ajax({
+            url: "http://localhost:53768/api/Movies" + "/" + movieName,
+            crossdomain: true,
+            contentType: "application/json",
+            type: "DELETE",
+            success: function (result) {
+                console.log("success");
+                window.location.reload();
+            },
+            error: function (xhr, errorType, exception) {
+                var errorMessage = exception || xhr.statusText;
+                console.log(exception);
+                console.log(xhr);
+                alert(errorType + ";  " + exception + "  Status:: " + xhr.statusText);
+            }
+        });
+    }
+
+
+    function Savechanges() {
+        var moviename = $("#txtMovieName").val();
+        var frmdata = $("#frmUpdate").serialize();
+        var producername = $("#txtProducer").val();
+        var releasedate = $("#txtReleaseDate").val();
+        var DataObject =
+        {
+            "Movies": [
+                {
+                    "MovieName": moviename,
+                    "Producer": producername,
+                    "DateOfRelease": releasedate,
+                    "actor": [
+                        {
+                            "ActorName": "Test2"
+                        }
+                    ]
+                }
+            ]
+        }
+        var dt = {
+            "MovieName": moviename
+
+            //,
+            //"Producer": producername,
+            //"DateOfRelease": releasedate
+        }
+
+        $.ajax({
+            url: "http://localhost:53768/api/Movies/" + moviename + "",
+            data: JSON.stringify(dt),
+            dataType: "json",
+            crossdomain: true,
+            contentType: "application/json; charset=utf-8",
+            type: "PUT",
+            //define a contentType of your request
+            secure: true,
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "*"
+            },
+            success: function (data) {
+                tblData = data
+                $.each(data, function (i, data) {
+                    var actorsData = data.Table[i].Actors;
+                    window.sessionStorage.setItem('data', data.Table[i]);
+                    userData = data;
+                    $('#txtMovieName').val(movieName);
+                    $('#txtProducer').val(data.Table[i].Producer);
+                    $("#txtReleaseDate").val(data.Table[i].DateOfRelease);
+                    var body = "";
+                    for (var i = 0; i <= actorsData.length - 1; i++) {
+                        body += "<option id=" + i + ">" + actorsData[i].ActorName + "</option > ";
+                        $(body).appendTo($("#slctActors"));
+                    }
+
+                });
+            },
+            error: function (xhr, errorType, exception) {
+                var errorMessage = exception || xhr.statusText;
+                console.log(exception);
+                console.log(xhr);
+                alert(errorType + ";  " + errorMessage + " " + exception + "  Status:: " + xhr.statusText);
+            }
+        });
+
+        console.log(data + "," + producername + "," + releasedate);
+    }
+
+</script>
+
+<div style="height:20px;">
+
+</div>
+<div class="container-fluid">
+    <table class="table" id="tblMovies">
+        <thead>
+            <tr>
+                <th>MovieName</th>
+                <th>DateOfRelease</th>
+                <th>Producer</th>
+                <th>Actors</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+        <tbody class="tblData"></tbody>
+    </table>
+
+    <div id="dvPopup">
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog " role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @*@Html.BeginForm(FormMethod.Post, new { @style = "height:80%",@id= "frmUpdate" }){*@
+                        <form style="height:60%" id="frmUpdate">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label>MovieName</label>
+                                    <input type="text" id="txtMovieName" placeholder="MovieName" name="MovieName" class="form-control" />
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Producer</label>
+                                    <input type="text" id="txtProducer" placeholder="Producer" name="Producer" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="txtReleaseDate">DateOfRelease</label>
+                                    <input type="text" id="txtReleaseDate" class="form-control" name="ReleaseDate" style="width:65%" />
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="slctActors">Actors</label>
+                                    <select id="slctActors" class="form-control" style="width:100%" name="Actors"></select>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="Savechanges()">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
