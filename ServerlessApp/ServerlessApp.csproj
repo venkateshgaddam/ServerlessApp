@@ -8,5 +8,17 @@
     <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="3.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.4" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.4" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Amazon.Lambda.APIGatewayEvents">
+      <HintPath>..\..\..\..\.nuget\packages\amazon.lambda.apigatewayevents\1.2.0\lib\netstandard2.0\Amazon.Lambda.APIGatewayEvents.dll</HintPath>
+    </Reference>
+    <Reference Include="AWSSDK.Core">
+      <HintPath>..\..\..\..\.nuget\packages\AWSSDK.Core\3.3.31.6\lib\net45\AWSSDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="AWSSDK.DynamoDBv2">
+      <HintPath>..\..\..\..\.nuget\packages\AWSSDK.DynamoDBv2\3.3.6\lib\net45\AWSSDK.DynamoDBv2.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
