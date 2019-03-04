@@ -10,22 +10,21 @@ namespace ServerlessApp.Pages
 {
     public class MoviesModel : PageModel
     {
-        public MoviesModel()
-        {
-            Movie_Id = 0;
-            MovieName = "";
-            Producer = "";
-            DateOfRelease = DateTime.Now.Date;
-            actor = new Actor();
-        }
-        public int Movie_Id { get; set; }
-        public string MovieName { get; set; }
-        public DateTime DateOfRelease { get; set; }
-        public string Producer { get; set; }
-        public Actor actor { get; set; }
+        [BindProperty]
+        public Movies movies { get; set; }
         public void OnGet()
         {
 
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            return RedirectToPage("./Index");
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿@page
 @model ServerlessApp.Pages.MoviesModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     ViewData["Title"] = "Movies";
     Layout = "~/Pages/_Layout.cshtml";
@@ -18,7 +19,7 @@
         RememberMe: true
     };
     $(document).ready(function myfunction() {
-
+        $('#loading').show();
         $.ajax({
             url: "http://localhost:53768/api/Movies",
 
@@ -162,6 +163,11 @@
         var frmdata = $("#frmUpdate").serialize();
         var producername = $("#txtProducer").val();
         var releasedate = $("#txtReleaseDate").val();
+        var actorNames = "";
+        $("#slctActors > option").each(function () {
+            //alert(this.text + ' ' + this.value);
+            actorNames = actorNames + this.value+"," ;
+        });
         var DataObject =
         {
             "Movies": [
@@ -178,11 +184,10 @@
             ]
         }
         var dt = {
-            "MovieName": moviename
-
-            //,
-            //"Producer": producername,
-            //"DateOfRelease": releasedate
+            "MovieName": moviename,
+            "Producer": producername,
+            "DateOfRelease": releasedate,
+            "Actor": actorNames.substring(0, actorNames.length - 2)
         }
 
         $.ajax({
@@ -200,20 +205,25 @@
             },
             success: function (data) {
                 tblData = data
-                $.each(data, function (i, data) {
-                    var actorsData = data.Table[i].Actors;
-                    window.sessionStorage.setItem('data', data.Table[i]);
-                    userData = data;
-                    $('#txtMovieName').val(movieName);
-                    $('#txtProducer').val(data.Table[i].Producer);
-                    $("#txtReleaseDate").val(data.Table[i].DateOfRelease);
-                    var body = "";
-                    for (var i = 0; i <= actorsData.length - 1; i++) {
-                        body += "<option id=" + i + ">" + actorsData[i].ActorName + "</option > ";
-                        $(body).appendTo($("#slctActors"));
-                    }
-
+                console.log(data);
+                $('#modal').modal('toggle');
+                window.location.reload(function myfunction() {
+                    $('#loading').hide();
                 });
+                //$.each(data, function (i, data) {
+                //    var actorsData = data.Table[i].Actors;
+                //    window.sessionStorage.setItem('data', data.Table[i]);
+                //    userData = data;
+                //    $('#txtMovieName').val(movieName);
+                //    $('#txtProducer').val(data.Table[i].Producer);
+                //    $("#txtReleaseDate").val(data.Table[i].DateOfRelease);
+                //    var body = "";
+                //    for (var i = 0; i <= actorsData.length - 1; i++) {
+                //        body += "<option id=" + i + ">" + actorsData[i].ActorName + "</option > ";
+                //        $(body).appendTo($("#slctActors"));
+                //    }
+
+                //});
             },
             error: function (xhr, errorType, exception) {
                 var errorMessage = exception || xhr.statusText;
@@ -232,6 +242,9 @@
 
 </div>
 <div class="container">
+    <div class="spinner-grow text-primary" role="status" id="loading">
+        <span class="sr-only">Loading...</span>
+    </div>
     <table class="table" id="tblMovies">
         <thead>
             <tr>
@@ -246,35 +259,35 @@
     </table>
 
     @*<div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header text-center">
-                    <h4 class="modal-title w-100 font-weight-bold">Sign in</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body mx-3">
-                    <div class="md-form mb-5">
-                        <i class="fas fa-envelope prefix grey-text"></i>
-                        <input type="email" id="defaultForm-email" class="form-control validate">
-                        <label data-error="wrong" data-success="right" for="defaultForm-email">Your email</label>
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h4 class="modal-title w-100 font-weight-bold">Sign in</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
+                    <div class="modal-body mx-3">
+                        <div class="md-form mb-5">
+                            <i class="fas fa-envelope prefix grey-text"></i>
+                            <input type="email" id="defaultForm-email" class="form-control validate">
+                            <label data-error="wrong" data-success="right" for="defaultForm-email">Your email</label>
+                        </div>
 
-                    <div class="md-form mb-4">
-                        <i class="fas fa-lock prefix grey-text"></i>
-                        <input type="password" id="defaultForm-pass" class="form-control validate">
-                        <label data-error="wrong" data-success="right" for="defaultForm-pass">Your password</label>
+                        <div class="md-form mb-4">
+                            <i class="fas fa-lock prefix grey-text"></i>
+                            <input type="password" id="defaultForm-pass" class="form-control validate">
+                            <label data-error="wrong" data-success="right" for="defaultForm-pass">Your password</label>
+                        </div>
+
                     </div>
-
-                </div>
-                <div class="modal-footer d-flex justify-content-center">
-                    <button class="btn btn-default">Login</button>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button class="btn btn-default">Login</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>*@
+        </div>*@
 
     @*<div class="text-center">
             <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalLoginForm">
@@ -282,8 +295,8 @@
                 Modal Login Form
             </a>
         </div>*@
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"  aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document" >
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Update Movie</h5>
@@ -295,24 +308,24 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label>MovieName</label>
-                            @Html.TextBoxFor(m => m.MovieName, new { @id = "txtMovieName", @placeholder = "MovieName", @name = "MovieName", @class = "form-control" })
+                            <input asp-for="movies.MovieName" type="text" id="txtMovieName" placeholder="Producer" name="Producer" class="form-control" />
+                            @*@Html.TextBoxFor(m => m.MovieName, new { @id = "txtMovieName", @placeholder = "MovieName", @name = "MovieName", @class = "form-control" })*@
                         </div>
                         <div class="form-group col-md-6">
                             <label>Producer</label>
-                            <input type="text" id="txtProducer" placeholder="Producer" name="Producer" class="form-control" />
+                            <input asp-for="movies.Producer" type="text" id="txtProducer" placeholder="Producer" name="Producer" class="form-control" />
+                            @*<input type="text" id="txtProducer" placeholder="Producer" name="Producer" class="form-control" />*@
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="txtReleaseDate">DateOfRelease</label>
-                            <input type="text" id="txtReleaseDate" class="form-control" name="ReleaseDate" style="width:65%" />
+                            <input asp-for="movies.DateOfRelease" type="text" id="txtReleaseDate" class="form-control" name="ReleaseDate" style="width:65%" />
                         </div>
                         <div class="form-group col-md-6">
                             <label for="slctActors">Actors</label>
 
-                            <select id="slctActors" class="form-control" multiple>
-                               
-                            </select>
+                            <select id="slctActors" class="form-control" multiple></select>
                         </div>
 
                     </div>
