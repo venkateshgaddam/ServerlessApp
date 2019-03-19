@@ -26,17 +26,18 @@ namespace ServerlessApp.Controller
         }
 
         // GET: api/Movies/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}", Name = "GetDetails")]
+        [Route("GetDetails")]
         public string Get(int id)
         {
             return "value";
         }
 
         // POST: api/Movies
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+        //[HttpPost]
+        //public void Post([FromBody] string value)
+        //{
+        //}
         // PUT: api/Movies/5
         [HttpPost("{movieName}")]
         public async Task Edit(string movieName, [FromBody] Movies test)

@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using ServerlessApp.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -17,8 +18,8 @@ namespace ServerlessApp.DAL
 {
     public class clsDynamoDB : IDisposable
     {
-        static string AccessKey = "AKIAJ6AL3KT4C2ZZAOBQ";//ConfigurationManager<string>.AppSettings["cloudUserAccessKey"];
-        static string SecretKey = "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";//ConfigurationManager.AppSettings["cloudUserSecretKey"];
+        static string AccessKey = ConfigurationManager.AppSettings["cloudUserAccessKey"];
+        static string SecretKey = ConfigurationManager.AppSettings["cloudUserSecretKey"];
         static string successMessage = string.Empty;
         static int marks = 0;
         static readonly AWSCredentials credentials = new BasicAWSCredentials(AccessKey, SecretKey);

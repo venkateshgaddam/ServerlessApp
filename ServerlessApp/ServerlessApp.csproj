@@ -9,6 +9,7 @@
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.4" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.4" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
+    <PackageReference Include="Telerik.UI.for.AspNet.Core.Trial" Version="2018.3.911" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Amazon.Lambda.APIGatewayEvents">
@@ -19,6 +20,12 @@
     </Reference>
     <Reference Include="AWSSDK.DynamoDBv2">
       <HintPath>..\..\..\..\.nuget\packages\AWSSDK.DynamoDBv2\3.3.6\lib\net45\AWSSDK.DynamoDBv2.dll</HintPath>
+    </Reference>
+    <Reference Include="AWSSDK.EC2">
+      <HintPath>..\..\..\..\.nuget\packages\awssdk.ec2\3.3.47.3\lib\net45\AWSSDK.EC2.dll</HintPath>
+    </Reference>
+    <Reference Include="Kendo.Mvc">
+      <HintPath>..\..\..\..\Documents\Visual Studio 2012\Projects\KendoCRUD\lib\KENDOUIMVC\2018.3.1017.545\Kendo.Mvc.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

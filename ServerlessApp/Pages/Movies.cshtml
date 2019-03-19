@@ -1,5 +1,7 @@
 ﻿@page
 @model ServerlessApp.Pages.MoviesModel
+@addTagHelper *, Kendo.Mvc
+@using Kendo.Mvc.UI
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     ViewData["Title"] = "Movies";
@@ -11,17 +13,21 @@
     <link rel="stylesheet" href="~/css/bootstrap.min.css" />
     <script src="~/js/bootstrap.js"></script>*@
 
+@*<script src="~/css/images/semantic.min.js"></script>*@
+<link href="~/css/images/semantic.min.css" rel="stylesheet" />
+
 <script type="text/javascript">
     var userData = null;
+    var oldMovieName = "";
     var data = {
         Email: 'Test',
         Password: 'Test',
         RememberMe: true
     };
     $(document).ready(function myfunction() {
-        $('#loading').show();
+
         $.ajax({
-            url: "http://localhost:53768/api/Movies",
+            url: "http://localhost:53768/api/Movies/",//"https://f1nbyh5aa2.execute-api.us-east-1.amazonaws.com/Dev/movies",
 
             dataType: "json",
             crossdomain: true,
@@ -29,10 +35,10 @@
             type: "GET",
             //define a contentType of your request
             secure: true,
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "*"
-            },
+            //headers: {
+            //    "Access-Control-Allow-Origin": "*",
+            //    "Access-Control-Allow-Headers": "*"
+            //},
             success: function (data) {
                 tblData = data
                 $.each(data, function (i, data) {
@@ -73,16 +79,16 @@
     }
 
     $('#dvPopup').on('load', function () {
-        //var $el = $("#modal_contact");
-        //var $username = $el.data('userName');
         console.log("Success");
     });
 
     function myfunction(movieName) {
         console.log(movieName);
+
+        oldMovieName = movieName;
         var body = "";
         $(body).appendTo($("#slctActors"));
-
+        $('#txtMovieName').prop('disabled', true);
         $.ajax({
             url: "http://localhost:53768/api/Movies/" + movieName + "",
 
@@ -104,8 +110,10 @@
                 userData = data;
                 $('#txtMovieName').val(movieName);
                 $('#txtProducer').val(tblData.Producer);
+                var todayDate = kendo.toString(kendo.parseDate(new Date()), 'MM/dd/yyyy');
+                //$("#txtReleaseDate").value(todayDate);
                 $("#txtReleaseDate").val(tblData.DateOfRelease);
-                
+
                 for (var i = 0; i <= actorsData.length - 1; i++) {
                     $('#slctActors').children().remove();
                     body += "<option value=" + actorsData[i].ActorName + ">" + actorsData[i].ActorName + "</option > ";
@@ -122,16 +130,13 @@
             }
         });
 
-        $("#txtReleaseDate").datepicker({
-            inline: true
-        });
+        //$("#txtReleaseDate").datepicker();
+
+        //$('#txtReleaseDate').datepicker({
+        //    format: 'mm/dd/yyyy',
+        //    startDate: '-3d'
+        //});
         $("#exampleModal").modal('show');
-
-        // $('#slctActors').multiselect();
-    }
-
-
-    function getData(movie) {
 
     }
 
@@ -166,7 +171,7 @@
         var actorNames = "";
         $("#slctActors > option").each(function () {
             //alert(this.text + ' ' + this.value);
-            actorNames = actorNames + this.value+"," ;
+            actorNames = actorNames + this.value + ",";
         });
         var DataObject =
         {
@@ -191,7 +196,7 @@
         }
 
         $.ajax({
-            url: "http://localhost:53768/api/Movies/" + moviename + "",
+            url: "http://localhost:53768/api/Movies/" + oldMovieName + "",
             data: JSON.stringify(dt),
             dataType: "json",
             crossdomain: true,
@@ -235,6 +240,8 @@
 
         console.log(data + "," + producername + "," + releasedate);
     }
+
+
 
 </script>
 
@@ -320,12 +327,13 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="txtReleaseDate">DateOfRelease</label>
-                            <input asp-for="movies.DateOfRelease" type="text" id="txtReleaseDate" class="form-control" name="ReleaseDate" style="width:65%" />
+                            @Html.Kendo().DatePicker().Name("datepicker").HtmlAttributes(new { @class = "form-control", @style = "width: 95%;display: block;", id = "txtreleaseDate" })
+                            @*<input asp-for="movies.DateOfRelease" type="text" id="txtReleaseDate" class="form-control" name="ReleaseDate" style="width:65%" />*@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="slctActors">Actors</label>
 
-                            <select id="slctActors" class="form-control" multiple></select>
+                            <select id="slctActors" class="ui fluid dropdown"></select>
                         </div>
 
                     </div>
