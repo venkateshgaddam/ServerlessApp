@@ -11,7 +11,7 @@ namespace ServerlessApp.DAL
         public string CreateInstance()
         {
 
-            AmazonEC2Client amazonEC2Client = new AmazonEC2Client();
+            //AmazonEC2Client amazonEC2Client = new AmazonEC2Client();
             return "Success";
 
         }

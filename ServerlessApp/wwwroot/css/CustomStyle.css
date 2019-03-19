@@ -11,7 +11,7 @@
     min-height: 20px;
     padding: 19px;
     margin-bottom: 20px;
-    background-color: #bcbfba; /*#f5f5f5;*/
+    background-color: #dee2e66b; /*#bcbfba; #f5f5f5;*/
     border: 1px solid #e3e3e3;
     border-radius: 4px;
     -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
@@ -33,6 +33,7 @@
 .isa_success {
     color: #4F8A10;
     background-color: #DFF2BF;
+    margin:0 auto;
 }
 
 .isa_warning {
@@ -46,7 +47,7 @@
 }
 
     .isa_info i, .isa_success i, .isa_warning i, .isa_error i {
-        margin: 10px 22px;
+        margin: 10px 5px;
         font-size: 2em;
         vertical-align: middle;
     }
