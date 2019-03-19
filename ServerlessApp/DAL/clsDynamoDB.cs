@@ -231,22 +231,6 @@ namespace ServerlessApp.DAL
             return successMessage = obj.HttpStatusCode == System.Net.HttpStatusCode.OK ? "Success" : "Error";
         }
 
-        public async Task<LoginModel> CheckUser(string username, string password)
-        {
-            try
-            {
-                LoginModel message = await GetTable();
-                return message;
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-
-
-        }
-
         public async Task<PutItemResponse> PutItemAsync()
         {
             try
