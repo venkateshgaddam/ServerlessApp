@@ -14,14 +14,6 @@ namespace ServerlessApp.Pages
         public Movies movies { get; set; }
         public void OnGet()
         {
-            string someVar = "";
-
-            for (int i = 0; i < 10; i++)
-            {
-                someVar += "test" + i.ToString();
-            }
-
-
         }
 
         public async Task<IActionResult> OnPostAsync()

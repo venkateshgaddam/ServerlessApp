@@ -27,8 +27,7 @@
     $(document).ready(function myfunction() {
 
         $.ajax({
-            url: "http://localhost:53768/api/Movies/",//"https://f1nbyh5aa2.execute-api.us-east-1.amazonaws.com/Dev/movies",
-
+            url: "api/Movies/",
             dataType: "json",
             crossdomain: true,
             contentType: "application/json",
@@ -42,22 +41,25 @@
             success: function (data) {
                 tblData = data
                 $.each(data, function (i, data) {
-                    var actorsData = data.Table[i].Actors;
+                    var actorsData = data.table[i].actors;
                     var actorsNames = actorNames(actorsData);
-                    window.sessionStorage.setItem('data', data.Table[i]);
                     userData = data;
-                    var Update = "<a name=LoginButton data-toggle= modal  data-target= #exampleModal onclick=myfunction('" + this.ItemArray[1] + "')  value=Update href=# id=btnUpdate>Update</a>";
-                    var Delete = "<a name=LoginBut onclick=DeleteRecord('" + this.ItemArray[1] + "') href=# id=" + data.Table[i].MovieName + ">Delete</a>";
-                    var body = "<tr>";//  data-toggle=modal data-id= " + i + " data-target=#exampleModal
-                    body += "<td id=" + data.Table[i].MovieName + ">" + data.Table[i].MovieName + "</td > ";
-                    body += "<td>" + data.Table[i].DateOfRelease + "</td>";
-                    body += "<td>" + data.Table[i].Producer + "</td>";
+                    var Update = "<a name=LoginButton data-toggle= modal  data-target= #exampleModal onclick=updateMovie('" + this.itemArray[1] + "')  value=Update href=# id=btnUpdate>Update</a>";
+                    var Delete = "<a name=LoginBut onclick=DeleteRecord('" + this.itemArray[1] + "') href=# id=" + data.table[i].movieName + ">Delete</a>";
+                    var body = "<tr>";
+                    body += "<td id=" + data.table[i].movieName + ">" + data.table[i].movieName + "</td > ";
+                    body += "<td>" + data.table[i].dateOfRelease + "</td>";
+                    body += "<td>" + data.table[i].producer + "</td>";
                     body += "<td>" + actorsNames.replace(/,\s*$/, "") + "</td>";
                     body += "<td>" + Update + "  ||  " + Delete + "</td>";
                     body += "</tr>";
                     $(body).appendTo($(".tblData"));
                 });
-                $('#tblMovies').DataTable();
+                $('#tblMovies').DataTable(
+                    //{
+                    //"scrollX": true
+                    //}
+                );
             },
             error: function (xhr, errorType, exception) {
                 var errorMessage = exception || xhr.statusText;
@@ -73,16 +75,12 @@
     function actorNames(data) {
         var names = "";
         for (var i = 0; i < data.length; i++) {
-            names = names + data[i].ActorName + ",";
+            names = names + data[i].actorName + ",";
         }
         return names;
     }
 
-    $('#dvPopup').on('load', function () {
-        console.log("Success");
-    });
-
-    function myfunction(movieName) {
+    function updateMovie(movieName) {
         console.log(movieName);
 
         oldMovieName = movieName;
@@ -241,8 +239,6 @@
         console.log(data + "," + producername + "," + releasedate);
     }
 
-
-
 </script>
 
 <div style="height:80px;">
@@ -252,7 +248,7 @@
     <div class="spinner-grow text-primary" role="status" id="loading">
         <span class="sr-only">Loading...</span>
     </div>
-    <table class="table" id="tblMovies">
+    <table class="table" id="tblMovies" style="width:100%">
         <thead>
             <tr>
                 <th>MovieName</th>
@@ -265,43 +261,7 @@
         <tbody class="tblData"></tbody>
     </table>
 
-    @*<div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header text-center">
-                        <h4 class="modal-title w-100 font-weight-bold">Sign in</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body mx-3">
-                        <div class="md-form mb-5">
-                            <i class="fas fa-envelope prefix grey-text"></i>
-                            <input type="email" id="defaultForm-email" class="form-control validate">
-                            <label data-error="wrong" data-success="right" for="defaultForm-email">Your email</label>
-                        </div>
-
-                        <div class="md-form mb-4">
-                            <i class="fas fa-lock prefix grey-text"></i>
-                            <input type="password" id="defaultForm-pass" class="form-control validate">
-                            <label data-error="wrong" data-success="right" for="defaultForm-pass">Your password</label>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer d-flex justify-content-center">
-                        <button class="btn btn-default">Login</button>
-                    </div>
-                </div>
-            </div>
-        </div>*@
-
-    @*<div class="text-center">
-            <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalLoginForm">
-                Launch
-                Modal Login Form
-            </a>
-        </div>*@
+   
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
